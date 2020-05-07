@@ -28,7 +28,6 @@ export const capitalize = (s: string) => {
 export const waitObjectParamSet = (p: any, m: string, nbRetry = 300) =>
     new Promise((resolve, reject) => {
         try {
-            console.log('checking for ',m,'in',p);
             if (p && p[m] && nbRetry > 0) {
                 return resolve(nbRetry > 0);
             }
@@ -51,12 +50,34 @@ export function toCamelCase(str: string) {
     return str
         .replace(underscoreRegex, ' ')
         .replace(sandwichNumberRegex, '$1_')
-        .replace(camelCaseRegex, function (match, index) {
+        .replace(camelCaseRegex, function(match, index) {
             if (/^\W+$/.test(match)) {
                 return '';
             }
             return index === 0 ? match.trimLeft().toLowerCase() : match.toUpperCase();
         });
+}
+
+export async function mapAsync<T, U>(
+    arr: T[],
+    callbackFn: (value: T, index: number, array: T[]) => Promise<U>,
+    thisArg?: any
+) {
+    return Promise.all(arr.map(async (value, index, array) => {
+        try {
+            return await callbackFn(value, index, array);
+        } catch(e) {
+            throw e;
+        }
+    }, thisArg));
+}
+
+export function arrayMove(array: [], oldIndex: number, newIndex: number) {
+    if (newIndex >= array.length) {
+        newIndex = array.length - 1;
+    }
+    array.splice(newIndex, 0, array.splice(oldIndex, 1)[0]);
+    return array;
 }
 
 export function remap(obj: IObject, mapping: IObject, deep: boolean = false) {
@@ -70,7 +91,7 @@ export function remap(obj: IObject, mapping: IObject, deep: boolean = false) {
             mapping && mapping.values && mapping.values[k] && mapping.values[k];
         if (vMap) {
             for (const kv in vMap) {
-                if (kv === val) {
+                if (kv === val && vMap.hasOwnProperty(kv)) {
                     return vMap[kv];
                 }
             }
@@ -85,16 +106,33 @@ export function remap(obj: IObject, mapping: IObject, deep: boolean = false) {
     return newObj;
 }
 
-const isRegExp = function (obj: any) {
-    return !!(obj && obj.test && obj.exec && (obj.ignoreCase || obj.ignoreCase === false));
+const isRegExp = function(obj: any) {
+    return !!(obj && obj.test && obj.exec && (obj.ignoreCase || !obj.ignoreCase));
 };
+let foundR = 0;
 
-export function clone(obj: IObject | undefined, excludes: Array<string | RegExp> = []): any {
+export function clone(obj: any, excludes: Array<string | RegExp> = [], dropEmptyString = false, depth = 0): any {
+    const REDUNDANT = '<Too much clone depth>';
+    // console.log('clone with excludes', excludes);
     let newObj: IObject;
-    if (['undefined', 'object', 'null'].includes(typeof obj)) {
+    if (depth > 20) {
+        if (!foundR) {
+            console.trace('found redundant');
+            foundR += 1;
+        }
+        return REDUNDANT;
+    }
+    if (obj === null) {
         return obj;
     }
-    if (!obj) {
+    if (typeof obj === 'string') {
+        if (dropEmptyString && !obj.length) {
+            return;
+        }
+        return obj;
+    }
+    if (typeof obj === 'undefined'
+        || typeof obj === 'number' || typeof obj === 'boolean') {
         return obj;
     }
 
@@ -102,14 +140,17 @@ export function clone(obj: IObject | undefined, excludes: Array<string | RegExp>
         return obj;
     }
 
-
     if (Object.prototype.toString.apply(obj) === '[object Array]') {
         newObj = [];
         for (let k = 0; k < obj.length; k += 1) {
-            newObj[k] = clone(obj[k]);
+            newObj[k] = clone(obj[k], excludes, dropEmptyString, depth + 1);
+            if (newObj[k] === REDUNDANT) {
+                console.log('redundant key', k);
+            }
         }
         return newObj;
     }
+
     const regExps = excludes.filter((r: any) => isRegExp(r));
     newObj = {};
     for (let k in obj) {
@@ -119,7 +160,10 @@ export function clone(obj: IObject | undefined, excludes: Array<string | RegExp>
                 return k.match(r) !== null;
             }).length === 0;
             if (includedStr && includeFromRegExp) {
-                newObj[k] = clone(obj[k]);
+                newObj[k] = clone(obj[k], excludes, dropEmptyString, depth + 1);
+                if (newObj[k] === REDUNDANT) {
+                    console.trace('redundant key', k);
+                }
             } else {
                 console.log('====> clone', k, includedStr, includeFromRegExp, 'excluded');
             }
