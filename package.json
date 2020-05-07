@@ -1,6 +1,6 @@
 {
   "name": "ts-utils2",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "some utilities to make typescript easier",
   "main": "dist/index.js",
   "types": "src/index.ts",
