@@ -1,14 +1,13 @@
 {
   "name": "entity-api-types",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "types for entity api proxy manager",
   "main": "dist/index.js",
   "types": "src/index.ts",
   "author": "Benamar BELARBI",
   "license": "MIT",
   "files": [
-    "index.js",
-    "index.ts"
+    "dist/*"
   ],
   "scripts": {
     "prepublish": "tsc -p tsconfig.json"
