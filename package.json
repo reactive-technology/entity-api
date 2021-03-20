@@ -1,7 +1,7 @@
 {
-  "name": "ts-utils2",
-  "version": "1.0.2",
-  "description": "some utilities to make typescript easier",
+  "name": "entity-api-types",
+  "version": "1.0.1",
+  "description": "types for entity api proxy manager",
   "main": "dist/index.js",
   "types": "src/index.ts",
   "author": "Benamar BELARBI",
@@ -22,7 +22,7 @@
   },
   "homepage": "https://github.com/benamar/ts-utils",
   "devDependencies": {
-    "@types/node": "^7.0.1",
+    "@types/node": "^10.17.15",
     "typescript": "^3.x.x"
   },
   "peerDependencies": {
