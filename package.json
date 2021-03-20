@@ -1,11 +1,15 @@
 {
   "name": "entity-api-types",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "types for entity api proxy manager",
   "main": "dist/index.js",
-  "types": "src/index.ts",
+  "types": "dist/index.d.ts",
   "author": "Benamar BELARBI",
   "license": "MIT",
+  "directories": {
+    "lib": "dist",
+    "test": "tests"
+  },
   "files": [
     "dist/*"
   ],
