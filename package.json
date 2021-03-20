@@ -1,6 +1,6 @@
 {
   "name": "entity-api-types",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "types for entity api proxy manager",
   "main": "dist/index.js",
   "types": "src/index.ts",
