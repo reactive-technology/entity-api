@@ -1,9 +1,8 @@
-import {AxiosRequestConfig, AxiosInstance} from 'axios';
 import {IObject} from "./Interfaces";
 
 export interface IAppContext {
-  $getAxiosOptions(s:string):AxiosRequestConfig;
-  $getAxiosInstance():AxiosInstance;
+  $getAxiosOptions(s:string):IObject;
+  $getAxiosInstance():IObject;
 }
 
 export class StoreManager {
@@ -11,14 +10,14 @@ export class StoreManager {
     this.context = context;
   }
 
-  public getAxiosOptions (url: string):AxiosRequestConfig|null {
+  public getAxiosOptions (url: string):IObject|null {
     if (this.context) {
       return this.context.$getAxiosOptions(url);
     }
     return null;
   }
 
-  axios (configs: AxiosRequestConfig, resolve: (p: unknown) => void, reject: (p: unknown) => void) {
+  axios (configs: IObject, resolve: (p: unknown) => void, reject: (p: unknown) => void) {
     if (this.context) {
       return this.context.$getAxiosInstance()
         .request(configs)

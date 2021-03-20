@@ -1,10 +1,10 @@
 {
   "compilerOptions": {
-    "outDir": "dist",
-    "target": "esnext",
-    "module": "esnext",
-    "strict": true,
+    "target": "es5",
+    "module": "commonjs",
     "declaration": true,
+    "strict": true,
+    "outDir": "dist",
     "jsx": "preserve",
     "importHelpers": true,
     "moduleResolution": "node",
@@ -23,7 +23,8 @@
     "lib": [
       "es5",
       "es6",
-      "esnext"
+      "esnext",
+      "dom"
     ]
   },
   "include": [
