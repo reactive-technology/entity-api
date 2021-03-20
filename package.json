@@ -1,6 +1,6 @@
 {
   "name": "entity-api-types",
-  "version": "1.0.4",
+  "version": "1.0.6",
   "description": "types for entity api proxy manager",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -30,5 +30,8 @@
   },
   "peerDependencies": {
     "typescript": ">=2.0.0"
+  },
+  "dependencies": {
+    "tslib": "^2.1.0"
   }
 }
